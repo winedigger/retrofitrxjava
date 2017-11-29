@@ -7,7 +7,12 @@ import io.reactivex.functions.Consumer;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.v7.app.AppCompatActivity;
+import android.util.Log;
 import android.widget.TextView;
+
+import org.greenrobot.eventbus.EventBus;
+import org.greenrobot.eventbus.Subscribe;
+import org.greenrobot.eventbus.ThreadMode;
 
 import java.util.List;
 
@@ -44,8 +49,12 @@ public class MainActivity extends AppCompatActivity {
 
         // Trigger our request and display afterwards
         requestGeonames();
+        EventBus.getDefault().register(this);
     }
-
+    @Subscribe(threadMode = ThreadMode.MAIN)
+    public void onMessageEvent(CustomMessageEvent event) {
+        /* Do something */
+        Log.i("testing","event bus");};
     @Override
     protected void onDestroy() {
         // DO NOT CALL .dispose()
