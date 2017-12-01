@@ -4,10 +4,15 @@ package com.example.retrofitrxjava.retrofitrxjava;
 import java.util.List;
 
 import io.reactivex.functions.Consumer;
+
+import android.content.Intent;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.v7.app.AppCompatActivity;
 import android.util.Log;
+import android.view.View;
+import android.widget.Button;
+import android.widget.EditText;
 import android.widget.TextView;
 
 import org.greenrobot.eventbus.EventBus;
@@ -37,6 +42,9 @@ public class MainActivity extends AppCompatActivity {
 
     private TextView mOutputTextView;
 
+    private EditText resultsEditText;
+    private Button launchButton;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -50,6 +58,17 @@ public class MainActivity extends AppCompatActivity {
         // Trigger our request and display afterwards
         requestGeonames();
         EventBus.getDefault().register(this);
+
+        resultsEditText = (EditText)findViewById(R.id.resultsEditText);
+        launchButton = (Button)findViewById(R.id.launchButton);
+
+        launchButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Intent intent = new Intent(MainActivity.this, ChildActivity.class);
+                startActivity(intent);
+            }
+        });
     }
     @Subscribe(threadMode = ThreadMode.MAIN)
     public void onMessageEvent(CustomMessageEvent event) {
@@ -70,6 +89,11 @@ public class MainActivity extends AppCompatActivity {
         }
 
         mOutputTextView.setText(output.toString());
+    }
+    @Subscribe
+    public void onEvent(CustomMessageEvent event){
+        Log.d("ElectronicArmory", "Event fired " + event.getCustomMessage());
+        resultsEditText.setText(event.getCustomMessage());
     }
 
     private void requestGeonames() {
